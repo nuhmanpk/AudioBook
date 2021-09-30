@@ -8,15 +8,14 @@ from pyrogram.types import User, Message, Document
 from gtts import gTTS
 
 bughunter0 = Client(
-    "Plain BoT",
-    bot_token = "1909764506:AAHQoxvqdiHkOVC30ueKEYJJAK-70_CUtPI",
-    api_id = "1686161",
-    api_hash = "dccd06af518194c31ee8276bb4684077"
+    "Audio-BOT",
+    bot_token = os.environ["BOT_TOKEN"],
+    api_id = int(os.environ["API_ID"]),
+    api_hash = os.environ["API_HASH"]
 )
 
 START_STR = """
 Hi **{}**, I'm AudioBook Bot. Send Me a Pdf to Convert to AudioBook
-** Note This is a Pre Release, At present I'm limited to convert 10 pages**
 """
 ABOUT = """
 **BOT:** `AudioBook-Bot`
@@ -32,8 +31,10 @@ Send me a pdf file to Move on
 
 DOWNLOAD_LOCATION = os.environ.get("DOWNLOAD_LOCATION", "./DOWNLOADS/AudioBoT/")
 
-Disclaimer = """ Disclaimer Notice , This Audio Is Generated automatically Through AudioBook Bot, Join BugHunterBots on Telegram for More Bots .     You are Now Listening to your Audio                                            ."""  
+Disclaimer = """ Disclaimer Notice , This Audio Is Generated automatically Through AudioBook Bot, Join BugHunterBots on Telegram for More Bots .     You are Now Listening to your Audio  ."""
+  
 Thanks = """ Thats the End of Your Audio Book, Join BugHunterBots on Telegram To find more Interesting bots , And Thanks for Using this Service"""
+
 START_BUTTON = InlineKeyboardMarkup(
         [[
         InlineKeyboardButton('ABOUT',callback_data='cbabout'),
@@ -100,10 +101,6 @@ async def pdf_to_text(bot, message):
                 await txt.edit("Getting Number of Pages....")
                 num_of_pages = pdf_reader.getNumPages() # Number of Pages               
                 await txt.edit(f"Found {num_of_pages} Page")
-                if num_of_pages >= 15:
-                    await message.reply_text("As per Beta Testing, I'm limited to Access pages lessthan 15 Pages")
-                    os.remove(pdf_path)  
-                    return
                 page_no = pdf_reader.getPage(0) # pageObject
                 await txt.edit("Finding Text from Pdf File... ")
                 page_content = """ """ # EmptyString   
@@ -112,9 +109,9 @@ async def pdf_to_text(bot, message):
                   for page in range (0,num_of_pages):              
                       page_no = pdf_reader.getPage(page) # Iteration of page number
                       page_content += page_no.extractText()
-                eta = num_of_pages * 5
-                await txt.edit(f"Creating Your Audio Book...\n Please Don't Do Anything \n**ETA :** `{eta} seconds`")
+                await txt.edit(f"Creating Your Audio Book...\n Please Don't Do Anything \n**Join :** `@BugHunterBots`")
                 output_text = Disclaimer + page_content + Thanks
+              # Change Voice by editing the Language
                 language = 'en-in'  # 'en': ['en-us', 'en-ca', 'en-uk', 'en-gb', 'en-au', 'en-gh', 'en-in',
                                     # 'en-ie', 'en-nz', 'en-ng', 'en-ph', 'en-za', 'en-tz'],
                 tts_file = gTTS(text=output_text, lang=language, slow=False) 
